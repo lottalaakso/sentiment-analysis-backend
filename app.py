@@ -5,20 +5,14 @@ import nltk
 
 nltk.download('vader_lexicon')
 
-app = Flask(__name__)
-api = Api(app)
-sid = SentimentIntensityAnalyzer()
+from nltk.sentiment.vader import SentimentIntensityAnalyzer
 
-class SentimentAnalysis(Resource):
-    def post(self):
-        data = request.get_json()
-        text = data.get('text')
-        if text:
-            scores = sid.polarity_scores(text)
-            return jsonify(scores)
-        return {'message': 'No text provided'}, 400
+def analyze_sentiment(text):
+    sia = SentimentIntensityAnalyzer()
+    sentiment_scores = sia.polarity_scores(text)
+    return sentiment_scores['compound']
 
-api.add_resource(SentimentAnalysis, '/analyze')
-
-if __name__ == '__main__':
-    app.run(debug=True)
+# Example usage:
+text_to_analyze = "I hate this product!"
+sentiment_score = analyze_sentiment(text_to_analyze)
+print(f"Sentiment score: {sentiment_score}")
