@@ -1,0 +1,32 @@
+apiVersion: build.openshift.io/v1
+kind: BuildConfig
+metadata:
+  name: sentiment-analysis-pipeline
+spec:
+  source:
+    type: Git
+    git:
+      uri: 'https://github.com/lottalaakso/sentiment-analysis-backend/tree/main'
+  strategy:
+    type: JenkinsPipeline
+    jenkinsPipelineStrategy:
+      jenkinsfile: |
+        pipeline {
+          agent any
+          stages {
+            stage('Build') {
+              steps {
+                script {
+                  openshiftBuild(buildConfig: 'sentiment-analysis-pipeline', showBuildLogs: 'true')
+                }
+              }
+            }
+            stage('Deploy') {
+              steps {
+                script {
+                  openshiftDeploy(deploymentConfig: 'sent-analysis-backend')
+                }
+              }
+            }
+          }
+        }

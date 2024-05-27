@@ -1,0 +1,21 @@
+apiVersion: apps.openshift.io/v1
+kind: DeploymentConfig
+metadata:
+  name: sent-analysis-backend
+spec:
+  replicas: 1
+  selector:
+    app: sent-analysis-backend
+  template:
+    metadata:
+      labels:
+        app: sent-analysis-backend
+    spec:
+      containers:
+      - name: sent-analysis-backend
+        image: 'image-registry.openshift-image-registry.svc:5000/sentiment-analysis-backend/sent-analysis-backend:latest'
+        ports:
+        - containerPort: 5000
+        env:
+        - name: FLASK_ENV
+          value: production

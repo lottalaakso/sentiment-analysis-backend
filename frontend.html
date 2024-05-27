@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sentiment Analysis</title>
+</head>
+<body>
+    <h1>Sentiment Analysis</h1>
+    <textarea id="textInput" rows="4" cols="50" placeholder="Enter text to analyze..."></textarea><br>
+    <button onclick="analyzeSentiment()">Analyze</button>
+    <div id="result"></div>
+
+    <script>
+        function analyzeSentiment() {
+            const text = document.getElementById('textInput').value;
+            fetch('http://127.0.0.1:5000/analyze_sentiment', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ text: text })
+            })
+            .then(response => response.json())
+            .then(data => {
+                const resultDiv = document.getElementById('result');
+                resultDiv.innerHTML = `<p>Sentiment: ${data.sentiment}</p>`;
+                resultDiv.innerHTML += `<p>Scores: neg: ${data.scores.neg}, neu: ${data.scores.neu}, pos: ${data.scores.pos}, compound: ${data.scores.compound}</p>`;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+    </script>
+</body>
+</html>
